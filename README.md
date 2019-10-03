@@ -6,20 +6,22 @@ KGraphQL Spring Framework Boot Starters
 
 ```kotlin
 repositories {
+    mavenCentral()
+	jcenter()
     maven {
       url = uri("https://dl.bintray.com/allali84/com.github/")
     }
-  }
-  dependencies {
-    classpath("com.github:kgraphql-spring-boot-starter:0.0.1")
-  }
+}
+dependencies {
+    implementation("com.github:kgraphql-spring-boot-starter:0.0.1")
+}
 ```
-# Configuration Example
+# Configuration
 
 ```yaml
 spring:
  kgraphql:
-  host: "/graphql"
+  host: "/graphql" 
   cors:
    mapping: "/**"
    origins: "*"
