@@ -8,7 +8,7 @@ const val BACK_SLASH = '\\'
 const val N = 'n'
 const val T = 't'
 const val R = 'r'
-const val CURLY_BRACKETS_OPEN = '{'
+const val CURLY_BRACKETS_OPEN = "{"
 const val CURLY_BRACKETS_CLOSE = '}'
 const val HASH_SYMBOL = '#'
 const val NULL = "null"
@@ -55,26 +55,14 @@ fun String.removeAllComments() {
 fun String.toKgraphqlQuery() {
     val queryFirstIndex = this.indexOf(QUERY)
     if (queryFirstIndex > -1) {
-        //query = this.substring(queryFirstIndex + QUERY.length, this.length)
         var queryLastIndex = this.indexOf(VARIABLES) - 1
         if (queryLastIndex < queryFirstIndex)
             queryLastIndex = this.length - 1
-        //var i = 0
         run loop@{
             this.forEach { _ ->
                 if (this[queryLastIndex] == DOUBLE_QUOTE || (this[queryLastIndex] == CURLY_BRACKETS_CLOSE && this[queryLastIndex - 1] != DOUBLE_QUOTE))
                     return@loop
                 queryLastIndex--
-                /*when (it) {
-                    CURLY_BRACKETS_OPEN -> i++
-                    CURLY_BRACKETS_CLOSE -> {
-                        i--
-                        if (i == 0) {
-                            if (query[queryLastIndex] == COMMA || query[queryLastIndex] == DOUBLE_QUOTE)
-                                return@loop
-                        }
-                    }
-                }*/
 
             }
         }
@@ -85,31 +73,18 @@ fun String.toKgraphqlQuery() {
 fun String.toKgraphqlVariables() {
     val queryFirstIndex = this.indexOf(VARIABLES)
     if (queryFirstIndex > -1) {
-        //variables = this.substring(queryFirstIndex + VARIABLES.length, this.length)
         var queryLastIndex = this.indexOf(QUERY) - 1
         if (queryLastIndex < queryFirstIndex)
             queryLastIndex = this.length - 1
-        //var i = 0
         run loop@{
             this.forEach {_ ->
                 if (this[queryLastIndex] == DOUBLE_QUOTE || (this[queryLastIndex] == CURLY_BRACKETS_CLOSE && this[queryLastIndex - 1] != DOUBLE_QUOTE))
                     return@loop
                 queryLastIndex--
-                /*queryLastIndex++
-                when (it) {
-                    CURLY_BRACKETS_OPEN -> i++
-                    CURLY_BRACKETS_CLOSE -> {
-                        i--
-                        if (i == 0) {
-                            if (variables!![queryLastIndex] == COMMA || variables!![queryLastIndex] == DOUBLE_QUOTE)
-                                return@loop
-                        }
-                    }
-                }*/
 
             }
         }
         variables = this.substring(queryFirstIndex + VARIABLES.length, queryLastIndex)
     }
-    if (variables == NULL || variables!!.isEmpty()) variables = null
+    if (variables == NULL || variables == CURLY_BRACKETS_OPEN || variables!!.isEmpty()) variables = null
 }

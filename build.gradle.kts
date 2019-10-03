@@ -1,3 +1,4 @@
+import com.jfrog.bintray.gradle.BintrayExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -5,12 +6,17 @@ plugins {
 	id("io.spring.dependency-management") version "1.0.8.RELEASE"
 	kotlin("jvm") version "1.3.50" apply false
 	kotlin("plugin.spring") version "1.3.50" apply false
+	id("com.jfrog.bintray") version "1.8.4"
 	java
+	`maven-publish`
 }
+
+group = "com.github"
+version = "0.0.1"
 
 allprojects{
 	group = "com.github"
-	version = "0.0.1-SNAPSHOT"
+	version = "0.0.1"
 	repositories {
 		mavenCentral()
 		jcenter()
@@ -28,37 +34,53 @@ subprojects {
 	apply(plugin = "kotlin")
 	apply(plugin = "org.springframework.boot")
 	apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+	apply(plugin = "maven-publish")
+	apply(plugin = "com.jfrog.bintray")
 
-	/*dependencyManagement {
+	dependencyManagement {
 		dependencies {
 			dependency("com.apurebase:kgraphql:0.7.0")
 		}
 	}
-	dependencyManagement {
-		dependencies {
-			imports {
-				mavenBom("org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE")
-			}
-			dependencySet("io.swagger:1.5.12") {
-				//entry("swagger-annotations") its included in swagger-jaxrs
-				entry("swagger-jaxrs")
-			}
-			dependencySet("org.elasticsearch:6.2.1") {
-				entry("elasticsearch")
-				entry("transport")
-				entry("elasticsearch-rest-client")
-				entry("elasticsearch-rest-high-level-client")
-			}
-			dependency("javax.ws.rs:javax.ws.rs:2.1")
-			dependency("javax:javaee-api:8.0.1")
-			dependency("javax.validation:validation-api:2.0.0.Final")
-			dependency("com.hazelcast:hazelcast:3.12.2")
-			dependency("org.mock-server:mockserver-netty:5.6.1")
-			dependency("com.graphql-java:graphql-spring-boot-starter:5.0.2")
-			dependency("com.graphql-java:graphql-java-tools:5.2.4")
-			dependency("com.graphql-java:graphiql-spring-boot-starter:5.0.2")
+
+	if (name != "example") {
+
+		val sourcesJar by tasks.registering(Jar::class) {
+			classifier = "sources"
+			from(sourceSets.main.get().allSource)
 		}
-	}*/
+
+		artifacts.add("archives", sourcesJar)
+
+		bintray {
+			user = System.getenv("BINTRAY_USER")
+			key = System.getenv("BINTRAY_KEY")
+			publish = true
+			setPublications("MyPublication")
+			setConfigurations("archives")
+			pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
+				repo = project.group.toString()
+				name = project.name
+				vcsUrl = "https://github.com/Allali84/kgraphql-spring-boot.git"
+				setLicenses("Apache-2.0")
+				version = versionConfig(
+						project.version
+				)
+			})
+
+			publishing {
+				publications {
+					register("MyPublication", MavenPublication::class) {
+						from(components["java"])
+						groupId = project.group.toString()
+						artifactId = project.name
+						artifact(sourcesJar.get())
+						version = version
+					}
+				}
+			}
+		}
+	}
 
 	tasks.withType<KotlinCompile> {
 		kotlinOptions {
@@ -66,4 +88,11 @@ subprojects {
 			jvmTarget = "11"
 		}
 	}
+}
+
+
+fun versionConfig(version: Any): BintrayExtension.VersionConfig {
+	val versionConfig = BintrayExtension(project).VersionConfig()
+	versionConfig.name = version.toString()
+	return versionConfig
 }
