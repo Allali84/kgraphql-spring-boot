@@ -6,7 +6,6 @@ import com.github.kgraphql.process.query
 import com.github.kgraphql.process.variables
 import org.springframework.web.bind.annotation.*
 
-@CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 class KgraphQLController(private val schema : Schema) {
 
