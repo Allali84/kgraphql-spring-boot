@@ -1,21 +1,21 @@
+[ ![Download](https://api.bintray.com/packages/allali84/com.github/kgraphql-spring-boot-starter/images/download.svg?version=0.0.1) ](https://bintray.com/allali84/com.github/kgraphql-spring-boot-starter/0.0.1/link)
+
 # kgraphql-spring-boot
-KGraphQL Spring Framework Boot Starters
+KGraphQL Spring Framework Boot Starter
 
 
-# How-To
+# Gradle
 
-```kotlin
+```gradle
 repositories {
+    jcenter()
     mavenCentral()
-	jcenter()
-    maven {
-      url = uri("https://dl.bintray.com/allali84/com.github/")
-    }
 }
 dependencies {
     implementation("com.github:kgraphql-spring-boot-starter:0.0.1")
 }
 ```
+
 # Configuration
 
 ```yaml

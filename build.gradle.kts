@@ -6,13 +6,10 @@ plugins {
 	id("io.spring.dependency-management") version "1.0.8.RELEASE"
 	kotlin("jvm") version "1.3.50" apply false
 	kotlin("plugin.spring") version "1.3.50" apply false
-	id("com.jfrog.bintray") version "1.8.4"
+	id("com.jfrog.bintray") version "1.8.3"
 	java
 	`maven-publish`
 }
-
-group = "com.github"
-version = "0.0.1"
 
 allprojects{
 	group = "com.github"
@@ -56,6 +53,7 @@ subprojects {
 			user = System.getenv("BINTRAY_USER")
 			key = System.getenv("BINTRAY_KEY")
 			publish = true
+			override = true
 			setPublications("MyPublication")
 			setConfigurations("archives")
 			pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
@@ -71,8 +69,8 @@ subprojects {
 			publishing {
 				publications {
 					register("MyPublication", MavenPublication::class) {
+						groupId = "com.github"
 						from(components["java"])
-						groupId = project.group.toString()
 						artifactId = project.name
 						artifact(sourcesJar.get())
 						version = version
