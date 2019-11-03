@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(prefix = "spring.kgraphql")
 data class KGraphQLProperties(
         val host: String = "/graphql",
+        val subscription: String = "/subscription",
         val cors: Cors = Cors())
 
 data class Cors (

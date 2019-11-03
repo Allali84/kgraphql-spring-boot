@@ -1,6 +1,6 @@
 
 dependencies {
-	implementation(project(":kgraphql-spring-boot-autoconfigure"))
+	compile(project(":kgraphql-spring-boot-autoconfigure"))
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }

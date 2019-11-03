@@ -7,13 +7,12 @@ class UFOSightingRepositoryCustomImpl(private val entityManager: EntityManager):
 
     override fun getTopSightings(): MutableList<CountrySightings> {
         val query = entityManager.createNamedQuery("getUFOSighting", CountrySightings::class.java)
-        val result = query.setMaxResults(10).resultList
-        return result
+        return query.setMaxResults(10).resultList
     }
 
     override fun getTopCountrySightings(): MutableList<CountrySightings> {
         val query = entityManager.createNamedQuery("getUFOSightingByCountry", CountrySightings::class.java)
-        val result = query.setMaxResults(10).resultList
-        return result
+        return query.setMaxResults(10).resultList
     }
+
 }

@@ -1,0 +1,11 @@
+<script>
+  var socket = new WebSocket('ws://localhost:8080/subscription/Mysubscription');
+  socket.onopen = function() { console.log('connection established') };
+  socket.onclose = function() { console.log('connection closed') };
+  socket.onerror = function(err) { console.log('error: ', err)};
+  socket.onmessage = function(message) {
+    if (message.data !== '') {
+        window.alert('message from server: ' + message.data);
+    }
+  };
+</script>

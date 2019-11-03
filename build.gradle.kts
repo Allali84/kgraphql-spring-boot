@@ -13,7 +13,7 @@ plugins {
 
 allprojects{
 	group = "com.github"
-	version = "0.0.1"
+	version = "0.0.3"
 	repositories {
 		mavenCentral()
 		jcenter()
@@ -34,9 +34,10 @@ subprojects {
 	apply(plugin = "maven-publish")
 	apply(plugin = "com.jfrog.bintray")
 
+
 	dependencyManagement {
 		dependencies {
-			dependency("com.apurebase:kgraphql:0.7.1")
+			dependency("com.apurebase:kgraphql:0.8.0")
 		}
 	}
 

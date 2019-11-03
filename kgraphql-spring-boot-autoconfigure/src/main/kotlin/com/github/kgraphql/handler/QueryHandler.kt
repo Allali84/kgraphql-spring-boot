@@ -1,9 +1,8 @@
-package com.github.kgraphql.process
+package com.github.kgraphql.handler
 
 const val QUERY = "\"query\":\""
 const val VARIABLES = "\"variables\":"
 const val DOUBLE_QUOTE = '"'
-const val COMMA = ','
 const val BACK_SLASH = '\\'
 const val N = 'n'
 const val T = 't'
@@ -13,20 +12,32 @@ const val CURLY_BRACKETS_CLOSE = '}'
 const val HASH_SYMBOL = '#'
 const val NULL = "null"
 
-var variables: String? = ""
-var queryWithoutComment = ""
+var variables: String? = null
 var query = ""
 
-fun process(request: String)  {
-    queryWithoutComment = ""
+fun handle(request: String)  {
     query = ""
-    variables = ""
-    request.removeAllComments()
+    variables = null
+    var queryWithoutComment = request.removeAllComments2()
+    queryWithoutComment = queryWithoutComment.removeAllComments()
     queryWithoutComment.toKgraphqlVariables()
     queryWithoutComment.toKgraphqlQuery()
 }
 
-fun String.removeAllComments() {
+private fun String.removeAllComments(): String {
+    var result = ""
+    var i = 0
+    this.forEach { _ ->
+        if (this[i] != '\n' && this[i] != '\t' && this[i] != '\r') {
+            result += this[i]
+        }
+        i++
+    }
+    return result
+}
+
+private fun String.removeAllComments2(): String {
+    var result = ""
     var i = 0
     var slashCaraFound = false
     var isHashSymbolFound  = false
@@ -41,7 +52,7 @@ fun String.removeAllComments() {
                 } else {
                     slashCaraFound = false
                     if (this[i] != BACK_SLASH) {
-                        queryWithoutComment += this[i]
+                        result += this[i]
                     } else {
                         slashCaraFound = true
                     }
@@ -50,9 +61,10 @@ fun String.removeAllComments() {
         }
         i++
     }
+    return result
 }
 
-fun String.toKgraphqlQuery() {
+private fun String.toKgraphqlQuery() {
     val queryFirstIndex = this.indexOf(QUERY)
     if (queryFirstIndex > -1) {
         var queryLastIndex = this.indexOf(VARIABLES) - 1
@@ -70,7 +82,7 @@ fun String.toKgraphqlQuery() {
     }
 }
 
-fun String.toKgraphqlVariables() {
+private fun String.toKgraphqlVariables() {
     val queryFirstIndex = this.indexOf(VARIABLES)
     if (queryFirstIndex > -1) {
         var queryLastIndex = this.indexOf(QUERY) - 1
@@ -86,5 +98,5 @@ fun String.toKgraphqlVariables() {
         }
         variables = this.substring(queryFirstIndex + VARIABLES.length, queryLastIndex)
     }
-    if (variables == NULL || variables == CURLY_BRACKETS_OPEN || variables!!.isEmpty()) variables = null
+    if (variables == NULL || variables == CURLY_BRACKETS_OPEN || variables == null || variables!!.isEmpty()) variables = null
 }
